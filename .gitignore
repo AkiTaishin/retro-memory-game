@@ -1,0 +1,11 @@
+# Node
+node_modules/
+dist/
+
+# OS / editor
+.DS_Store
+Thumbs.db
+*.log
+
+# Vite
+.vite/

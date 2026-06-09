@@ -1,0 +1,12 @@
+Sprite assets in this folder are from:
+  sparklinlabs/superpowers-asset-packs (rpg-battle-system)
+  https://github.com/sparklinlabs/superpowers-asset-packs
+
+License: CC0 (Public Domain)
+Artist: Pixel-boy / Superpowers Asset Packs
+
+Used files:
+  Wizard.png, bowman.png, paladin.png, warrior2.png
+  boar.png, giant.png, octopus.png, yeti.png
+
+These sprites are used for internal training only (non-commercial).
