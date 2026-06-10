@@ -3,7 +3,6 @@ setlocal EnableExtensions EnableDelayedExpansion
 chcp 65001 >nul
 
 set "DEV_URL=http://localhost:5173"
-set "DEV_PORT=5173"
 
 echo ========================================
 echo  CRYSTAL MEMORY - 起動
@@ -93,71 +92,37 @@ if not exist "node_modules\vite\bin\vite.js" (
     exit /b 1
 )
 
-echo [実行] 開発サーバーを起動します
-echo ----------------------------------------
-echo 起動後、ブラウザが %DEV_URL% を自動で開きます。
-echo ----------------------------------------
-echo.
-
-start /b "" node "node_modules\vite\bin\vite.js"
-
-echo [待機] 開発サーバーの起動を待っています...
-set "SERVER_READY=0"
-for /l %%i in (1,1,60) do (
-    netstat -an | findstr ":%DEV_PORT%" | findstr "LISTENING" >nul 2>&1
-    if not errorlevel 1 (
-        set "SERVER_READY=1"
-        goto :server_ready
-    )
-    ping 127.0.0.1 -n 2 >nul
-)
-:server_ready
-
 echo.
 echo ========================================
-if "!SERVER_READY!"=="1" (
-    echo  起動完了
-) else (
-    echo  起動に時間がかかっています
-)
+echo  起動準備完了
 echo ========================================
 echo.
 echo [OK] Node.js: !NODE_VERSION!
 echo [OK] 作業フォルダ: %CD%
 echo [OK] 依存パッケージ: !INSTALL_STATUS!
-if "!SERVER_READY!"=="1" (
-    echo [OK] 開発サーバー: %DEV_URL%
-    echo [OK] ブラウザが自動で開きます。
-    echo      開かない場合は %DEV_URL% を手動で開いてください。
-) else (
-    echo [警告] サーバーの起動確認ができませんでした。
-    echo        上記の Vite ログにエラーが出ていないか確認してください。
-    echo        問題なければ %DEV_URL% をブラウザで開いてください。
-)
+echo [OK] 開発サーバー: %DEV_URL%
 echo.
-echo  このウィンドウは開いたままにしてください。
-echo  ゲームを終了するときは Ctrl+C を押してください。
+echo ----------------------------------------
+echo  以下で Vite を起動します。
+echo  起動後、ブラウザが %DEV_URL% を自動で開きます。
+echo  停止するときは Ctrl+C を 1 回押してください。
+echo ----------------------------------------
 echo.
 
-if "!SERVER_READY!"=="1" (
-    set "DEV_EXIT=0"
-) else (
-    set "DEV_EXIT=1"
-)
+node "node_modules\vite\bin\vite.js"
+set "DEV_EXIT=!ERRORLEVEL!"
 
-:watch_server
-netstat -an | findstr ":%DEV_PORT%" | findstr "LISTENING" >nul 2>&1
-if errorlevel 1 goto :server_stopped
-ping 127.0.0.1 -n 3 >nul
-goto :watch_server
-
-:server_stopped
 echo.
 echo ========================================
 echo  終了
 echo ========================================
 echo.
-echo [OK] 開発サーバーが停止しました。
+if not "!DEV_EXIT!"=="0" (
+    echo [情報] 開発サーバーが停止しました。（終了コード: !DEV_EXIT!^）
+    echo        上記のログにエラーが出ていないか確認してください。
+) else (
+    echo [OK] 開発サーバーが停止しました。
+)
 echo.
 pause
 exit /b !DEV_EXIT!
