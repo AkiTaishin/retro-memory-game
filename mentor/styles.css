@@ -1,0 +1,388 @@
+/**
+ * メンター用コメント付きソース（受講者には配布しない）
+ * 対応ファイル: src/styles.css
+ *
+ * レトロ RPG 風 UI。CSS 変数でテーマ色を一元管理。
+ * 状態クラス（is-flipped / is-matched）と engine.js の faceUp / matched が対応。
+ */
+
+/* --- テーマカラー（FF 風ウィンドウ・ゴールドアクセント） --- */
+:root {
+  color-scheme: dark;
+  --bg-0: #08102a;
+  --bg-1: #101c44;
+  --window: #10245a;
+  --window-edge: #d8dce8;
+  --window-edge-dark: #1a3068;
+  --accent: #f8d878;
+  --accent-soft: #88d8f8;
+  --text: #f0f0f8;
+  --muted: #98a8d0;
+  --danger: #f87878;
+  --card-back-0: #203878;
+  --card-back-1: #142858;
+  --shadow: rgba(0, 0, 0, 0.45);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  min-height: 100%;
+}
+
+body {
+  font-family: 'Press Start 2P', monospace;
+  background:
+    radial-gradient(circle at top, rgba(120, 180, 255, 0.18), transparent 35%),
+    linear-gradient(180deg, var(--bg-1), var(--bg-0));
+  color: var(--text);
+  image-rendering: pixelated; /* ドット絵スプライトをくっきり表示 */
+}
+
+/* スキャンライン風オーバーレイ（装飾のみ、クリックは透過） */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background: repeating-linear-gradient(
+    0deg,
+    rgba(255, 255, 255, 0.03),
+    rgba(255, 255, 255, 0.03) 1px,
+    transparent 1px,
+    transparent 3px
+  );
+  opacity: 0.35;
+}
+
+#app {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 24px 16px 40px;
+}
+
+.scene {
+  width: min(920px, 100%);
+  display: grid;
+  gap: 18px;
+}
+
+/* --- 共通ウィンドウ枠（角の装飾は ::before / ::after） --- */
+.window {
+  position: relative;
+  padding: 22px 18px;
+  background: linear-gradient(180deg, #183068 0%, var(--window) 100%);
+  border: 4px solid var(--window-edge);
+  box-shadow:
+    inset 0 0 0 2px var(--window-edge-dark),
+    0 10px 0 var(--shadow);
+}
+
+.window::before,
+.window::after {
+  content: '';
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  background: var(--window-edge);
+}
+
+.window::before {
+  top: 6px;
+  left: 6px;
+}
+
+.window::after {
+  top: 6px;
+  right: 6px;
+}
+
+.window-title {
+  text-align: center;
+}
+
+.eyebrow {
+  margin: 0 0 16px;
+  color: var(--accent-soft);
+  font-size: 0.62rem;
+  letter-spacing: 0.08em;
+}
+
+h1,
+h2 {
+  margin: 0;
+  line-height: 1.5;
+  color: var(--accent);
+  text-shadow: 0 3px 0 #684818;
+}
+
+h1 {
+  font-size: clamp(1.2rem, 4vw, 1.8rem);
+}
+
+h2 {
+  font-size: clamp(1rem, 3vw, 1.35rem);
+}
+
+.subtitle,
+.result-line,
+.result-note,
+.result-best,
+.record-empty {
+  margin: 12px 0 0;
+  color: var(--muted);
+  font-size: 0.62rem;
+  line-height: 1.8;
+}
+
+.field,
+.difficulty-fieldset {
+  display: grid;
+  gap: 10px;
+  margin: 0 0 18px;
+  border: 0;
+  padding: 0;
+}
+
+.field-label,
+.hud-label,
+legend {
+  color: var(--accent-soft);
+  font-size: 0.58rem;
+}
+
+input[type='text'] {
+  width: 100%;
+  padding: 14px 12px;
+  border: 3px solid var(--window-edge-dark);
+  background: #081028;
+  color: var(--text);
+  font: inherit;
+  font-size: 0.72rem;
+}
+
+input[type='text']:focus {
+  outline: 2px solid var(--accent);
+}
+
+.difficulty-options {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.difficulty-option {
+  display: grid;
+  gap: 6px;
+  padding: 12px;
+  border: 3px solid var(--window-edge-dark);
+  background: rgba(8, 16, 40, 0.65);
+  cursor: pointer;
+  font-size: 0.62rem;
+}
+
+.difficulty-option small {
+  color: var(--muted);
+  font-size: 0.55rem;
+}
+
+/* :has() で選択中ラジオの親 label をハイライト */
+.difficulty-option:has(input:checked) {
+  border-color: var(--accent);
+  box-shadow: inset 0 0 0 1px rgba(248, 216, 120, 0.35);
+}
+
+.btn-primary,
+.btn-secondary {
+  width: 100%;
+  padding: 14px 12px;
+  border: 0;
+  font: inherit;
+  cursor: pointer;
+  transition: transform 120ms ease;
+}
+
+.btn-primary {
+  background: linear-gradient(180deg, #ffe890, #d0a830);
+  color: #201808;
+  box-shadow: 0 4px 0 #684818;
+}
+
+.btn-secondary {
+  background: linear-gradient(180deg, #6888d0, #385898);
+  color: var(--text);
+  box-shadow: 0 4px 0 #182850;
+}
+
+.btn-primary:active,
+.btn-secondary:active {
+  transform: translateY(2px);
+}
+
+.window-records {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.record-title {
+  margin: 0 0 8px;
+  color: var(--accent);
+  font-size: 0.58rem;
+}
+
+.record-list {
+  margin: 0;
+  padding-left: 18px;
+  color: var(--muted);
+  font-size: 0.52rem;
+  line-height: 1.9;
+}
+
+/* --- HUD（4 列グリッド） --- */
+.hud-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.hud-value {
+  display: block;
+  margin-top: 8px;
+  color: var(--text);
+  font-size: 0.62rem;
+  word-break: break-word;
+}
+
+/* --- カードボード（CSS 変数で列数を render.js から注入） --- */
+.board {
+  display: grid;
+  grid-template-columns: repeat(var(--board-cols), minmax(0, 1fr));
+  gap: 10px;
+}
+
+.card {
+  aspect-ratio: 3 / 4;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  perspective: 900px; /* 3D フリップの vanishing point */
+}
+
+.card:disabled,
+.card.is-matched {
+  cursor: default;
+}
+
+.card-inner {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+  transition: transform 320ms ease;
+}
+
+/* is-flipped / is-matched 時に Y 軸 180° 回転 → 表面表示 */
+.card.is-flipped .card-inner,
+.card.is-matched .card-inner {
+  transform: rotateY(180deg);
+}
+
+.card-face {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  backface-visibility: hidden;
+  border: 3px solid var(--window-edge-dark);
+  box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.08);
+}
+
+.card-back {
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.12), transparent 40%),
+    repeating-linear-gradient(
+      45deg,
+      var(--card-back-0),
+      var(--card-back-0) 8px,
+      var(--card-back-1) 8px,
+      var(--card-back-1) 16px
+    );
+}
+
+.card-back::after {
+  content: '★';
+  color: var(--accent);
+  font-size: 1rem;
+  text-shadow: 0 2px 0 #684818;
+}
+
+.card-front {
+  transform: rotateY(180deg); /* 初期状態は背面を向いている */
+  background: #eef4ff;
+  grid-template-rows: 1fr auto;
+  gap: 6px;
+  padding: 8px;
+}
+
+.card-front img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  image-rendering: pixelated;
+}
+
+.card-caption {
+  color: #142850;
+  font-size: 0.45rem;
+  text-align: center;
+}
+
+.card.is-matched .card-front {
+  filter: saturate(1.15);
+  box-shadow: inset 0 0 0 2px rgba(248, 216, 120, 0.8);
+}
+
+/* --- クリアオーバーレイ --- */
+.overlay {
+  position: fixed;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: 20px;
+  background: rgba(4, 8, 24, 0.72);
+}
+
+.window-result {
+  width: min(420px, 100%);
+  text-align: center;
+}
+
+.result-actions {
+  display: grid;
+  gap: 10px;
+  margin-top: 18px;
+}
+
+.result-note {
+  color: var(--accent);
+}
+
+@media (max-width: 720px) {
+  .hud-grid,
+  .window-records,
+  .difficulty-options {
+    grid-template-columns: 1fr;
+  }
+
+  .card-caption {
+    font-size: 0.4rem;
+  }
+}

@@ -1,0 +1,28 @@
+<!--
+  メンター用コメント付きソース（受講者には配布しない）
+  対応ファイル: index.html
+
+  Vite のエントリ HTML。#app に JavaScript が描画、/src/main.js が起点。
+  本ファイルは参照用。実際のビルドはルートの index.html → src/ を参照する。
+-->
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CRYSTAL MEMORY</title>
+    <!-- Press Start 2P: レトロ RPG 風フォント -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/src/styles.css" />
+  </head>
+  <body>
+    <!-- 全画面は JS（render.js）が innerHTML で生成 -->
+    <div id="app"></div>
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>
