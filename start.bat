@@ -1,4 +1,4 @@
-@echo off
+﻿@echo off
 setlocal EnableExtensions EnableDelayedExpansion
 chcp 65001 >nul
 
@@ -33,7 +33,7 @@ set "PROJECT_DIR="
 if exist "%SCRIPT_DIR%package.json" (
     set "PROJECT_DIR=%SCRIPT_DIR%"
 ) else if exist "%SCRIPT_DIR%retro-memory-game\package.json" (
-    set "PROJECT_DIR=%SCRIPT_DIR%retro-memory-game\"
+    set "PROJECT_DIR=%SCRIPT_DIR%retro-memory-game"
 ) else (
     echo [エラー] プロジェクトフォルダが見つかりません。
     echo.
