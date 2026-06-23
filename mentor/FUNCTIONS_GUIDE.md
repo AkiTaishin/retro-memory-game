@@ -5,6 +5,25 @@
 
 ---
 
+## 目次
+
+| セクション | 内容 |
+|------------|------|
+| [処理の全体フロー](#処理の全体フロー) | 起動からクリアまでの流れ |
+| [`src/` フォルダ概要](#src-フォルダ概要) | ソース全体の構成 |
+| [`src/main.js` の概要](#srcmainjs-の概要) | エントリポイントの層 |
+| [`src/data/` フォルダ概要](#srcdata-フォルダ概要) | 静的データ定義 |
+| [`src/game/` フォルダ概要](#srcgame-フォルダ概要) | ルール・状態・時間 |
+| [`src/game` 連動パターン](#srcgame-の関数が連動する典型パターン) | ゲーム中の関数のつながり |
+| [`src/ui/` フォルダ概要](#srcui-フォルダ概要) | 描画・画面制御 |
+| [`src/storage/` フォルダ概要](#srcstorage-フォルダ概要) | 記録の永続化 |
+| [カードクリックの呼び出し順](#カードクリック1回の関数呼び出し順参考) | 操作時の関数チェーン |
+| [モジュール間の依存関係](#モジュール間の依存関係) | import の関係図 |
+
+各フォルダ内の **ファイル別の関数詳細** は、該当フォルダ概要の直後に記載しています。
+
+---
+
 ## 処理の全体フロー
 
 ```
@@ -23,7 +42,7 @@ main.js
                                      └─ finished なら finishGame()
 ```
 
-------------------------------------------------------------------
+---
 
 ## `src/` フォルダ概要
 
@@ -52,7 +71,7 @@ index.html
 
 ---
 
-## `src/main.js` の層概要
+## `src/main.js` の概要
 
 `src/` 直下に置かれた **エントリポイント（起動の入口）** の層。サブフォルダではなくファイル1つだけが担う「アプリの電源ボタン」に相当する。
 
@@ -72,7 +91,7 @@ index.html
 | タイトル画面を最初に表示する | クリックイベントの詳細処理（`ui/events.js` の仕事） |
 | ページ離脱時にタイマーを止める | スコアの保存（`storage/scores.js` の仕事） |
 
-**設計意図:** 起動と終了の手続きだけをここに集約し、ゲーム本体のロジックはすべて下位のフォルダに任せる。読解の起点として「最初にどこが動くか」を追いやすくする。
+> **設計意図:** 起動と終了の手続きだけをここに集約し、ゲーム本体のロジックはすべて下位のフォルダに任せる。読解の起点として「最初にどこが動くか」を追いやすくする。
 
 ### 起動時の処理の流れ
 
@@ -141,7 +160,7 @@ index.html
 
 
 
-【 `src/data/` フォルダ概要】
+## `src/data/` フォルダ概要
 
 ゲームで使う「データ」の定義だけを置く層。ロジックや DOM 操作は含まない。値を export して他モジュールから読み取られる。
 
@@ -168,7 +187,7 @@ DIFFICULTY          … easy / normal の盤面サイズ・ペア数（定数）
 getRosterSlice()    … ROSTER から必要数だけ切り出す（関数）
 ```
 
-------------------------------------------------------------------
+---
 
 ## `src/data/cards.js`
 
@@ -183,20 +202,22 @@ getRosterSlice()    … ROSTER から必要数だけ切り出す（関数）
 
 ### `getRosterSlice(pairCount)`
 
-**内容:** `ROSTER` の先頭から `pairCount` 件だけ切り出して返す。
+| 項目 | 内容 |
+|------|------|
+| **内容** | `ROSTER` の先頭から `pairCount` 件だけ切り出して返す。 |
 
 **使うタイミング:**
 - `buildDeck()` 内で、今回のゲームに使うキャラクターを選ぶとき
 - 難易度ごとの `pairCount`（6 または 8）に応じてデッキの種類数を決める
 
-------------------------------------------------------------------
+---
 
 
 
 
 
 
-【 `src/game/` フォルダ概要　】
+## `src/game/` フォルダ概要
 
 ゲームの「中身」（ルール・状態・時間）を担当する層。UI（`src/ui/`）やデータ定義（`src/data/`）には依存するが、DOM には触らない。
 
@@ -260,6 +281,8 @@ getProgress(state)          … 表示用の集計（状態は変更しない）
 | `name` | `WIZARD` | 表示名 |
 | `image` | `/sprites/Wizard.png` | 画像パス |
 | `faceUp` | `false` | 表向きかどうか |
+
+---
 
 ### `createInitialState(difficulty)`
 
@@ -334,7 +357,7 @@ getProgress(state)          … 表示用の集計（状態は変更しない）
 **使うタイミング:**
 - `buildDeck()` でデッキの順番をランダムにするとき
 
-**読解ポイント:** `sort(() => Math.random() - 0.5)` とは違い、元配列を壊さず、より均等なランダム性を狙った実装。
+> **読解ポイント:** `sort(() => Math.random() - 0.5)` とは違い、元配列を壊さず、より均等なランダム性を狙った実装。
 
 ---
 
@@ -590,7 +613,7 @@ formatElapsed(ms)     … 表示専用（タイマー状態には触らない）
 - クリア画面表示（`buildViewContext()`）
 - 記録保存（`finishGame()`）
 
-**読解ポイント:** `stopTimer()` 後も `elapsedMs` に最後の値が残るため、クリア時に `getElapsedMs()` で正しいプレイ時間を取得できる。
+> **読解ポイント:** `stopTimer()` 後も `elapsedMs` に最後の値が残るため、クリア時に `getElapsedMs()` で正しいプレイ時間を取得できる。
 
 ---
 
@@ -616,7 +639,7 @@ formatElapsed(ms)     … 表示専用（タイマー状態には触らない）
 
 ---
 
-### `src/game` の関数が連動する典型パターン
+## `src/game` の関数が連動する典型パターン
 
 #### ゲーム開始時
 
@@ -715,9 +738,11 @@ createScreenController(root)   … export。showStart / cleanup を返す
 
 ### `renderStartScreen(root, playerName)`
 
-**内容:** タイトル画面の HTML を `root.innerHTML` で一括生成する。
+| 項目 | 内容 |
+|------|------|
+| **内容** | タイトル画面の HTML を `root.innerHTML` で一括生成する。 |
 
-含まれる要素:
+**含まれる要素:**
 - ヒーロー名入力欄（前回の名前を初期値に）
 - 難易度ラジオボタン
 - START QUEST ボタン
@@ -731,11 +756,13 @@ createScreenController(root)   … export。showStart / cleanup を返す
 
 ### `renderGameScreen(root, context)`
 
-**内容:** プレイ画面の HTML を `root.innerHTML` で一括生成する。
+| 項目 | 内容 |
+|------|------|
+| **内容** | プレイ画面の HTML を `root.innerHTML` で一括生成する。 |
 
 `context` に含まれる主な値: `state`, `playerName`, `progress`, `elapsedMs`, `bestRecord`, `saved`
 
-含まれる要素:
+**含まれる要素:**
 - HUD（ヒーロー名・時間・手数・発見数）
 - カード盤面（`state.deck` から生成）
 - BACK TO TITLE ボタン
@@ -750,7 +777,9 @@ createScreenController(root)   … export。showStart / cleanup を返す
 
 ### `updateHud(progress, elapsedMs)`
 
-**内容:** 既存 DOM の `#timer-display`, `#moves-display`, `#found-display` のテキストだけ更新する。画面全体は再生成しない。
+| 項目 | 内容 |
+|------|------|
+| **内容** | 既存 DOM の `#timer-display`, `#moves-display`, `#found-display` のテキストだけ更新する。画面全体は再生成しない。 |
 
 **使うタイミング:**
 - ゲーム中 250ms ごとの HUD タイマー更新
@@ -760,7 +789,9 @@ createScreenController(root)   … export。showStart / cleanup を返す
 
 ### `renderResultOverlay(context)`（非 export）
 
-**内容:** クリア時のオーバーレイ HTML を生成する。VICTORY 表示、タイム・手数、記録更新の有無、ベスト記録、PLAY AGAIN / TITLE ボタン。
+| 項目 | 内容 |
+|------|------|
+| **内容** | クリア時のオーバーレイ HTML を生成する。VICTORY 表示、タイム・手数、記録更新の有無、ベスト記録、PLAY AGAIN / TITLE ボタン。 |
 
 **使うタイミング:**
 - `renderGameScreen()` 内で `state.finished` が `true` のとき
@@ -769,7 +800,9 @@ createScreenController(root)   … export。showStart / cleanup を返す
 
 ### `renderRecordsPanel()`（非 export）
 
-**内容:** タイトル画面用のランキング HTML を生成。各難易度の上位3件を `getTopRecords()` から取得して表示。
+| 項目 | 内容 |
+|------|------|
+| **内容** | タイトル画面用のランキング HTML を生成。各難易度の上位3件を `getTopRecords()` から取得して表示。 |
 
 **使うタイミング:**
 - `renderStartScreen()` 内
@@ -778,7 +811,9 @@ createScreenController(root)   … export。showStart / cleanup を返す
 
 ### `escapeHtml(value)`（非 export）
 
-**内容:** HTML 特殊文字（`&`, `<`, `>`, `"`, `'`）をエスケープして XSS を防ぐ。
+| 項目 | 内容 |
+|------|------|
+| **内容** | HTML 特殊文字（`&`, `<`, `>`, `"`, `'`）をエスケープして XSS を防ぐ。 |
 
 **使うタイミング:**
 - プレイヤー名などユーザー入力を HTML に埋め込むすべての箇所
@@ -791,7 +826,9 @@ createScreenController(root)   … export。showStart / cleanup を返す
 
 ### `createScreenController(root)`
 
-**内容:** 画面制御オブジェクトを作る。内部で `playerName`, `difficultyKey`, `state`, `hudTimerId` を保持。
+| 項目 | 内容 |
+|------|------|
+| **内容** | 画面制御オブジェクトを作る。内部で `playerName`, `difficultyKey`, `state`, `hudTimerId` を保持。 |
 
 **返り値:**
 - `showStart` — タイトル画面を表示
@@ -835,7 +872,9 @@ createScreenController(root)   … export。showStart / cleanup を返す
 
 ### `bindStartScreen()`（内部関数）
 
-**内容:** `#start-button` のクリックで、名前・難易度を読み取り `beginGame()` を呼ぶ。名前が空なら `HERO` を使う。
+| 項目 | 内容 |
+|------|------|
+| **内容** | `#start-button` のクリックで、名前・難易度を読み取り `beginGame()` を呼ぶ。名前が空なら `HERO` を使う。 |
 
 **使うタイミング:**
 - タイトル画面描画の直後
@@ -844,7 +883,10 @@ createScreenController(root)   … export。showStart / cleanup を返す
 
 ### `bindGameScreen()`（内部関数）
 
-**内容:** プレイ画面のイベントを登録する。
+| 項目 | 内容 |
+|------|------|
+| **内容** | プレイ画面のイベントを登録する。 |
+
 - `#board` クリック → カードクリック処理（`closest('[data-uid]')` でカード特定）
 - `#quit-button` → `showStart()`
 - `#retry-button` → `beginGame()`
@@ -888,7 +930,9 @@ createScreenController(root)   … export。showStart / cleanup を返す
 
 ### `paintBoard()`（内部関数）
 
-**内容:** `renderGameScreen()` で盤面を丸ごと再描画し、直後に `bindGameScreen()` でイベントを再登録。
+| 項目 | 内容 |
+|------|------|
+| **内容** | `renderGameScreen()` で盤面を丸ごと再描画し、直後に `bindGameScreen()` でイベントを再登録。 |
 
 **使うタイミング:**
 - カードをめくった直後
@@ -920,7 +964,9 @@ createScreenController(root)   … export。showStart / cleanup を返す
 
 ### `cleanupGameTimers()`（内部関数）
 
-**内容:** ゲームタイマー（`stopTimer()`）と HUD 更新用 `setInterval` を両方停止。
+| 項目 | 内容 |
+|------|------|
+| **内容** | ゲームタイマー（`stopTimer()`）と HUD 更新用 `setInterval` を両方停止。 |
 
 **使うタイミング:**
 - タイトルに戻るとき
@@ -956,7 +1002,7 @@ getBestRecord()            … 1位の記録を返す
 getTopRecords()            … 上位 N 件を返す
 ```
 
-**読解ポイント:** `loadRecords()` は他3関数の共通の読み込み処理として内部から呼ばれる。`try/catch` でストレージ障害時は空データにフォールバックする。
+> **読解ポイント:** `loadRecords()` は他3関数の共通の読み込み処理として内部から呼ばれる。`try/catch` でストレージ障害時は空データにフォールバックする。
 
 ---
 
@@ -966,7 +1012,9 @@ getTopRecords()            … 上位 N 件を返す
 
 ### `loadRecords()`
 
-**内容:** `localStorage` から全記録を読み込む。キーは `crystal-memory-records`。JSON パース失敗やデータ不正時は空オブジェクト `{}` を返す。
+| 項目 | 内容 |
+|------|------|
+| **内容** | `localStorage` から全記録を読み込む。キーは `crystal-memory-records`。JSON パース失敗やデータ不正時は空オブジェクト `{}` を返す。 |
 
 **使うタイミング:**
 - `saveRecord()`, `getBestRecord()`, `getTopRecords()` の内部
@@ -975,7 +1023,10 @@ getTopRecords()            … 上位 N 件を返す
 
 ### `saveRecord(difficultyKey, playerName, payload)`
 
-**内容:** 記録を追加して保存する。
+| 項目 | 内容 |
+|------|------|
+| **内容** | 記録を追加して保存する。 |
+
 1. 既存記録に新規エントリを追加（`moves`, `elapsedMs`, `savedAt`）
 2. 手数優先・同手数なら時間短い順にソート
 3. 上位5件に `slice(0, 5)` で制限
@@ -990,7 +1041,9 @@ getTopRecords()            … 上位 N 件を返す
 
 ### `getBestRecord(difficultyKey)`
 
-**内容:** 指定難易度の1位記録を返す。なければ `null`。
+| 項目 | 内容 |
+|------|------|
+| **内容** | 指定難易度の1位記録を返す。なければ `null`。 |
 
 **使うタイミング:**
 - クリア画面でベスト記録を表示するとき（`buildViewContext()`）
@@ -999,7 +1052,9 @@ getTopRecords()            … 上位 N 件を返す
 
 ### `getTopRecords(difficultyKey, limit = 5)`
 
-**内容:** 指定難易度の上位記録を `limit` 件返す（デフォルト5件）。
+| 項目 | 内容 |
+|------|------|
+| **内容** | 指定難易度の上位記録を `limit` 件返す（デフォルト5件）。 |
 
 **使うタイミング:**
 - タイトル画面の HALL OF FAME 表示（`renderRecordsPanel()` では `limit = 3`）
