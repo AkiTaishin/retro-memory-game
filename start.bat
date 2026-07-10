@@ -1,29 +1,28 @@
-ï»¿@echo off
+@echo off
 setlocal EnableExtensions EnableDelayedExpansion
-chcp 65001 >nul
 
 set "DEV_URL=http://localhost:5173"
 
 echo ========================================
-echo  CRYSTAL MEMORY - èµ·å‹•
+echo  CRYSTAL MEMORY - ‹N“®
 echo ========================================
 echo.
 
 where node >nul 2>&1
 if errorlevel 1 (
-    echo [ã‚¨ãƒ©ãƒ¼] Node.js ãŒã‚¤ãƒ³ã‚¹ãƒˆãƒ¼ãƒ«ã•ã‚Œã¦ã„ã¾ã›ã‚“ã€‚
+    echo [ƒGƒ‰[] Node.js ‚ªƒCƒ“ƒXƒg[ƒ‹‚³‚ê‚Ä‚¢‚Ü‚¹‚ñB
     echo.
-    echo Node.js 18 ä»¥ä¸Šã‚’ã‚¤ãƒ³ã‚¹ãƒˆãƒ¼ãƒ«ã—ã¦ã‹ã‚‰ã€å†åº¦å®Ÿè¡Œã—ã¦ãã ã•ã„ã€‚
+    echo Node.js 18 ˆÈã‚ðƒCƒ“ƒXƒg[ƒ‹‚µ‚Ä‚©‚çAÄ“xŽÀs‚µ‚Ä‚­‚¾‚³‚¢B
     echo https://nodejs.org/
     echo.
     pause
     exit /b 1
 )
 
-echo [OK] Node.js ãŒè¦‹ã¤ã‹ã‚Šã¾ã—ãŸã€‚
+echo [OK] Node.js ‚ªŒ©‚Â‚©‚è‚Ü‚µ‚½B
 for /f "delims=" %%v in ('node -v 2^>nul') do (
     set "NODE_VERSION=%%v"
-    echo       ãƒãƒ¼ã‚¸ãƒ§ãƒ³: %%v
+    echo       ƒo[ƒWƒ‡ƒ“: %%v
 )
 echo.
 
@@ -35,11 +34,11 @@ if exist "%SCRIPT_DIR%package.json" (
 ) else if exist "%SCRIPT_DIR%retro-memory-game\package.json" (
     set "PROJECT_DIR=%SCRIPT_DIR%retro-memory-game"
 ) else (
-    echo [ã‚¨ãƒ©ãƒ¼] ãƒ—ãƒ­ã‚¸ã‚§ã‚¯ãƒˆãƒ•ã‚©ãƒ«ãƒ€ãŒè¦‹ã¤ã‹ã‚Šã¾ã›ã‚“ã€‚
+    echo [ƒGƒ‰[] ƒvƒƒWƒFƒNƒgƒtƒHƒ‹ƒ_‚ªŒ©‚Â‚©‚è‚Ü‚¹‚ñB
     echo.
-    echo æ¬¡ã®ã„ãšã‚Œã‹ã®å ´æ‰€ã« start.bat ã‚’ç½®ã„ã¦ãã ã•ã„ã€‚
-    echo   - retro-memory-game ãƒ•ã‚©ãƒ«ãƒ€ç›´ä¸‹
-    echo   - retro-memory-game ãƒ•ã‚©ãƒ«ãƒ€ãŒã‚ã‚‹éšŽå±¤
+    echo ŽŸ‚Ì‚¢‚¸‚ê‚©‚ÌêŠ‚É start.bat ‚ð’u‚¢‚Ä‚­‚¾‚³‚¢B
+    echo   - retro-memory-game ƒtƒHƒ‹ƒ_’¼‰º
+    echo   - retro-memory-game ƒtƒHƒ‹ƒ_‚ª‚ ‚éŠK‘w
     echo.
     pause
     exit /b 1
@@ -47,25 +46,25 @@ if exist "%SCRIPT_DIR%package.json" (
 
 cd /d "%PROJECT_DIR%"
 if errorlevel 1 (
-    echo [ã‚¨ãƒ©ãƒ¼] ãƒ—ãƒ­ã‚¸ã‚§ã‚¯ãƒˆãƒ•ã‚©ãƒ«ãƒ€ã¸ç§»å‹•ã§ãã¾ã›ã‚“ã§ã—ãŸã€‚
-    echo ãƒ‘ã‚¹: %PROJECT_DIR%
+    echo [ƒGƒ‰[] ƒvƒƒWƒFƒNƒgƒtƒHƒ‹ƒ_‚ÖˆÚ“®‚Å‚«‚Ü‚¹‚ñ‚Å‚µ‚½B
+    echo ƒpƒX: %PROJECT_DIR%
     echo.
     pause
     exit /b 1
 )
 
-echo [æƒ…å ±] ä½œæ¥­ãƒ•ã‚©ãƒ«ãƒ€: %CD%
+echo [î•ñ] ì‹ÆƒtƒHƒ‹ƒ_: %CD%
 echo.
 
-set "INSTALL_STATUS=ã‚¤ãƒ³ã‚¹ãƒˆãƒ¼ãƒ«æ¸ˆã¿ï¼ˆã‚¹ã‚­ãƒƒãƒ—ï¼‰"
+set "INSTALL_STATUS=ƒCƒ“ƒXƒg[ƒ‹Ï‚ÝiƒXƒLƒbƒvj"
 if exist "node_modules\" (
-    echo [ã‚¹ã‚­ãƒƒãƒ—] ä¾å­˜ãƒ‘ãƒƒã‚±ãƒ¼ã‚¸ã¯ã™ã§ã«ã‚¤ãƒ³ã‚¹ãƒˆãƒ¼ãƒ«æ¸ˆã¿ã§ã™ã€‚
-    echo            npm install ã‚’çœç•¥ã—ã¦ç¶šè¡Œã—ã¾ã™ã€‚
+    echo [ƒXƒLƒbƒv] ˆË‘¶ƒpƒbƒP[ƒW‚Í‚·‚Å‚ÉƒCƒ“ƒXƒg[ƒ‹Ï‚Ý‚Å‚·B
+    echo            npm install ‚ðÈ—ª‚µ‚Ä‘±s‚µ‚Ü‚·B
     echo.
     set "INSTALL_EXIT=0"
 ) else (
-    set "INSTALL_STATUS=åˆå›žã‚¤ãƒ³ã‚¹ãƒˆãƒ¼ãƒ«å®Œäº†"
-    echo [å®Ÿè¡Œ] npm install
+    set "INSTALL_STATUS=‰‰ñƒCƒ“ƒXƒg[ƒ‹Š®—¹"
+    echo [ŽÀs] npm install
     echo ----------------------------------------
     call npm install
     set "INSTALL_EXIT=!ERRORLEVEL!"
@@ -73,20 +72,20 @@ if exist "node_modules\" (
     echo.
 
     if not "!INSTALL_EXIT!"=="0" (
-        echo [ç•°å¸¸çµ‚äº†] npm install ã«å¤±æ•—ã—ã¾ã—ãŸã€‚ï¼ˆçµ‚äº†ã‚³ãƒ¼ãƒ‰: !INSTALL_EXIT!^ï¼‰
+        echo [ˆÙíI—¹] npm install ‚ÉŽ¸”s‚µ‚Ü‚µ‚½BiI—¹ƒR[ƒh: !INSTALL_EXIT!^j
         echo.
-        echo ãƒãƒƒãƒˆãƒ¯ãƒ¼ã‚¯æŽ¥ç¶šã‚„ Node.js ã®ãƒãƒ¼ã‚¸ãƒ§ãƒ³ã‚’ç¢ºèªã—ã¦ãã ã•ã„ã€‚
+        echo ƒlƒbƒgƒ[ƒNÚ‘±‚â Node.js ‚Ìƒo[ƒWƒ‡ƒ“‚ðŠm”F‚µ‚Ä‚­‚¾‚³‚¢B
         echo.
         pause
         exit /b !INSTALL_EXIT!
     )
 
-    echo [OK] npm install ãŒæ­£å¸¸ã«å®Œäº†ã—ã¾ã—ãŸã€‚
+    echo [OK] npm install ‚ª³í‚ÉŠ®—¹‚µ‚Ü‚µ‚½B
     echo.
 )
 
 if not exist "node_modules\vite\bin\vite.js" (
-    echo [ã‚¨ãƒ©ãƒ¼] Vite ãŒè¦‹ã¤ã‹ã‚Šã¾ã›ã‚“ã€‚npm install ãŒæ­£å¸¸ã«å®Œäº†ã—ã¦ã„ã‚‹ã‹ç¢ºèªã—ã¦ãã ã•ã„ã€‚
+    echo [ƒGƒ‰[] Vite ‚ªŒ©‚Â‚©‚è‚Ü‚¹‚ñBnpm install ‚ª³í‚ÉŠ®—¹‚µ‚Ä‚¢‚é‚©Šm”F‚µ‚Ä‚­‚¾‚³‚¢B
     echo.
     pause
     exit /b 1
@@ -94,18 +93,18 @@ if not exist "node_modules\vite\bin\vite.js" (
 
 echo.
 echo ========================================
-echo  èµ·å‹•æº–å‚™å®Œäº†
+echo  ‹N“®€”õŠ®—¹
 echo ========================================
 echo.
 echo [OK] Node.js: !NODE_VERSION!
-echo [OK] ä½œæ¥­ãƒ•ã‚©ãƒ«ãƒ€: %CD%
-echo [OK] ä¾å­˜ãƒ‘ãƒƒã‚±ãƒ¼ã‚¸: !INSTALL_STATUS!
-echo [OK] é–‹ç™ºã‚µãƒ¼ãƒãƒ¼: %DEV_URL%
+echo [OK] ì‹ÆƒtƒHƒ‹ƒ_: %CD%
+echo [OK] ˆË‘¶ƒpƒbƒP[ƒW: !INSTALL_STATUS!
+echo [OK] ŠJ”­ƒT[ƒo[: %DEV_URL%
 echo.
 echo ----------------------------------------
-echo  ä»¥ä¸‹ã§ Vite ã‚’èµ·å‹•ã—ã¾ã™ã€‚
-echo  èµ·å‹•å¾Œã€ãƒ–ãƒ©ã‚¦ã‚¶ãŒ %DEV_URL% ã‚’è‡ªå‹•ã§é–‹ãã¾ã™ã€‚
-echo  åœæ­¢ã™ã‚‹ã¨ãã¯ Ctrl+C ã‚’ 1 å›žæŠ¼ã—ã¦ãã ã•ã„ã€‚
+echo  ˆÈ‰º‚Å Vite ‚ð‹N“®‚µ‚Ü‚·B
+echo  ‹N“®ŒãAƒuƒ‰ƒEƒU‚ª %DEV_URL% ‚ðŽ©“®‚ÅŠJ‚«‚Ü‚·B
+echo  ’âŽ~‚·‚é‚Æ‚«‚Í Ctrl+C ‚ð 1 ‰ñ‰Ÿ‚µ‚Ä‚­‚¾‚³‚¢B
 echo ----------------------------------------
 echo.
 
@@ -114,14 +113,14 @@ set "DEV_EXIT=!ERRORLEVEL!"
 
 echo.
 echo ========================================
-echo  çµ‚äº†
+echo  I—¹
 echo ========================================
 echo.
 if not "!DEV_EXIT!"=="0" (
-    echo [æƒ…å ±] é–‹ç™ºã‚µãƒ¼ãƒãƒ¼ãŒåœæ­¢ã—ã¾ã—ãŸã€‚ï¼ˆçµ‚äº†ã‚³ãƒ¼ãƒ‰: !DEV_EXIT!^ï¼‰
-    echo        ä¸Šè¨˜ã®ãƒ­ã‚°ã«ã‚¨ãƒ©ãƒ¼ãŒå‡ºã¦ã„ãªã„ã‹ç¢ºèªã—ã¦ãã ã•ã„ã€‚
+    echo [î•ñ] ŠJ”­ƒT[ƒo[‚ª’âŽ~‚µ‚Ü‚µ‚½BiI—¹ƒR[ƒh: !DEV_EXIT!^j
+    echo        ã‹L‚ÌƒƒO‚ÉƒGƒ‰[‚ªo‚Ä‚¢‚È‚¢‚©Šm”F‚µ‚Ä‚­‚¾‚³‚¢B
 ) else (
-    echo [OK] é–‹ç™ºã‚µãƒ¼ãƒãƒ¼ãŒåœæ­¢ã—ã¾ã—ãŸã€‚
+    echo [OK] ŠJ”­ƒT[ƒo[‚ª’âŽ~‚µ‚Ü‚µ‚½B
 )
 echo.
 pause
