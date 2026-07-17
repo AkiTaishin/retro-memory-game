@@ -4,12 +4,12 @@
     {
       "label": "vite-dev",
       "type": "shell",
-      "command": "npm run dev",
+      "command": "npm run dev:debug",
       "options": {
         "cwd": "${workspaceFolder}"
       },
       "windows": {
-        "command": "npm.cmd run dev"
+        "command": "npm.cmd run dev:debug"
       },
       "isBackground": true,
       "problemMatcher": {
